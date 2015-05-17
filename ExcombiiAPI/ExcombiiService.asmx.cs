@@ -118,5 +118,22 @@ namespace ExcombiiAPI
             Context.Response.End();
         }
         #endregion
+
+        #region Get all products
+        [WebMethod]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public void GetProductDetails(string sProductCode)
+        {
+            System.Web.Script.Serialization.JavaScriptSerializer oSerializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+            BLProduct objProduct = new BLProduct();
+            objProduct.sProductCode = sProductCode;
+            objProduct = objProduct.GetProductDetails();
+
+            Context.Response.Write(oSerializer.Serialize(objProduct));
+            Context.Response.Flush();
+            Context.Response.Clear();
+            Context.Response.End();
+        }
+        #endregion
     }
 }

@@ -263,7 +263,7 @@ namespace ExcombiiAPI.BusinessLayer
                     objProduct.SCreatedOn = ToDateTime(dbReader["CreatedOn"]).ToString("MM/dd/yyyy");
                     objProduct.SUpdatedBy = ToString(dbReader["UpdatedBy"]);
                     objProduct.SUpdatedOn = ToDateTime(dbReader["UpdatedOn"]).ToString("MM/dd/yyyy");
-                    objProduct.SImageUrl = ToString(dbReader["imageurl"]);
+                    objProduct.SImageUrl = ConfigurationManager.AppSettings["WebsiteUrl"] + ToString(dbReader["imageurl"]);
                     objProduct.SProductName = ToString(dbReader["name"]);
                     objProduct.SBusinessid = ToString(dbReader["id"]);
                     objProduct.SFullName = ToString(dbReader["FullName"]);
@@ -285,6 +285,67 @@ namespace ExcombiiAPI.BusinessLayer
             return objLstProducts;
         }
 
-        
+        public BLProduct GetProductDetails()
+        {
+            BLProduct objProduct = new BLProduct();
+            DbDataReader dbReader = null;
+            try
+            {
+                InitializeDb();
+                List<DbParams> objLstDbParams = new List<DbParams>();
+                objLstDbParams.Add(new DbParams(DbType.Guid, 100, sProductCode, "@ProductCode", ParameterDirection.Input));
+                dbReader = ObjDbfactory.GetReader("SP_GetProductDetail", false, objLstDbParams);
+
+                while (dbReader.Read())
+                {
+                    this.sProductCode = ToString(dbReader["ProductCode"]);
+                    this.sCode = ToString(dbReader["code"]);
+                    this.STitle = ToString(dbReader["Title"]);
+                    this.ICategoryId = ToInteger(dbReader["GroupCode"]);
+                    this.SSubGroupCode = ToString(dbReader["SubGroupCode"]);
+                    this.SOrigin = ToString(dbReader["Origin"]);
+                    this.SMaterial = ToString(dbReader["Material"]);
+                    this.SCondition = ToString(dbReader["Condition"]);
+                    this.SDescription = ToString(dbReader["Description"]);
+                    this.DblPriceRetail = ToDouble(dbReader["PriceRetail"]);
+                    this.DblMinPrice = ToDouble(dbReader["PriceSelling"]);
+                    this.SSelleerID = ToString(dbReader["BusinessCode"]);
+                    this.SCreatedBy = ToString(dbReader["createdby"]);
+                    this.SCreatedOn = ToDateTime(dbReader["CreatedOn"]).ToString("MM/dd/yyyy");
+                    this.SUpdatedBy = ToString(dbReader["UpdatedBy"]);
+                    this.SUpdatedOn = ToDateTime(dbReader["UpdatedOn"]).ToString("MM/dd/yyyy");
+                    this.SImageUrl = ConfigurationManager.AppSettings["WebsiteUrl"] + ToString(dbReader["imageurl"]);
+                    this.SProductName = ToString(dbReader["name"]);
+                    this.SBusinessid = ToString(dbReader["id"]);
+                    this.SFullName = ToString(dbReader["FullName"]);
+                    this.iProductLikeCount = ToInteger(dbReader["LikeCount"]);
+                }
+
+                /* Getting Users information */
+                dbReader.NextResult();
+                while (dbReader.Read())
+                {
+                    if (this._objLstLikedUsers == null)
+                        this._objLstLikedUsers = new List<BLUser>();
+
+                    BLUser objUser = new BLUser();
+                    objUser.SUserCode = ToString(dbReader["UserCode"]);
+                    objUser.FirstName = ToString(dbReader["FullName"]);
+                    this._objLstLikedUsers.Add(objUser);
+                }
+
+                dbReader.Close();
+                ObjDbfactory.CloseConnection();
+            }
+            catch (Exception ex)
+            {
+                SendLogMail("BLProduct : GetAllProducts", ex.Message);
+
+                if (ObjDbfactory != null)
+                    ObjDbfactory.CloseConnection();
+            }
+            return this;
+        }
+
     }
 }
