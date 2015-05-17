@@ -125,6 +125,23 @@ namespace ExcombiiAPI.BusinessLayer
             get { return _sFullName; }
             set { _sFullName = value; }
         }
+
+        private string _sCreatedOn = "";
+
+        public string SCreatedOn
+        {
+            get { return _sCreatedOn; }
+            set { _sCreatedOn = value; }
+        }
+
+
+        private string _sUpdatedOn = "";
+
+        public string SUpdatedOn
+        {
+            get { return _sUpdatedOn; }
+            set { _sUpdatedOn = value; }
+        }
         #endregion
 
         #region integer properties
@@ -155,23 +172,16 @@ namespace ExcombiiAPI.BusinessLayer
         }
         #endregion
 
-        #region datetim properties
-        private DateTime? _dtCreatedOn;
+        #region other Properties
+        private List<BLUser> _objLstLikedUsers;
 
-        public DateTime? DtCreatedOn
+        public List<BLUser> ObjLstLikedUsers
         {
-            get { return _dtCreatedOn; }
-            set { _dtCreatedOn = value; }
-        }
-
-        private DateTime? dtUpdatedOn;
-
-        public DateTime? DtUpdatedOn
-        {
-            get { return dtUpdatedOn; }
-            set { dtUpdatedOn = value; }
+            get { return _objLstLikedUsers; }
+            set { _objLstLikedUsers = value; }
         }
         #endregion
+
 
         #region Object related variables
         DbFactory ObjDbfactory;
@@ -250,9 +260,9 @@ namespace ExcombiiAPI.BusinessLayer
                     objProduct.DblMinPrice = ToDouble(dbReader["PriceSelling"]);
                     objProduct.SSelleerID = ToString(dbReader["BusinessCode"]);
                     objProduct.SCreatedBy = ToString(dbReader["createdby"]);
-                    objProduct.DtCreatedOn = ToDateTime(dbReader["CreatedOn"]);
+                    objProduct.SCreatedOn = ToDateTime(dbReader["CreatedOn"]).ToString("MM/dd/yyyy");
                     objProduct.SUpdatedBy = ToString(dbReader["UpdatedBy"]);
-                    objProduct.dtUpdatedOn = ToDateTime(dbReader["UpdatedOn"]);
+                    objProduct.SUpdatedOn = ToDateTime(dbReader["UpdatedOn"]).ToString("MM/dd/yyyy");
                     objProduct.SImageUrl = ToString(dbReader["imageurl"]);
                     objProduct.SProductName = ToString(dbReader["name"]);
                     objProduct.SBusinessid = ToString(dbReader["id"]);
@@ -275,5 +285,6 @@ namespace ExcombiiAPI.BusinessLayer
             return objLstProducts;
         }
 
+        
     }
 }
