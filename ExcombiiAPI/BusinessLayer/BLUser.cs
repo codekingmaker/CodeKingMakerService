@@ -87,6 +87,7 @@ namespace ExcombiiAPI.BusinessLayer
                         DateOfBirth = ToDateTime(DbReader["DateOfBirth"]);
                         Email = ToString(DbReader["Email"]);
                         MobileNo = ToString(DbReader["ZipCode"]);
+                        SUserCode = ToString(DbReader["UserCode"]);
                     }
                 }
 

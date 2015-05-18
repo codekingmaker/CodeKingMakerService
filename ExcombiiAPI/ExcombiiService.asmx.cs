@@ -106,11 +106,11 @@ namespace ExcombiiAPI
         #region Get all products
         [WebMethod]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        public void GetAllProducts()
+        public void GetAllProducts(string sUserCode)
         {
             System.Web.Script.Serialization.JavaScriptSerializer oSerializer = new System.Web.Script.Serialization.JavaScriptSerializer();
             BLProduct objProduct = new BLProduct();
-            List<BLProduct> objLstProducts = objProduct.GetAllProducts();
+            List<BLProduct> objLstProducts = objProduct.GetAllProducts(sUserCode);
 
             Context.Response.Write(oSerializer.Serialize(objLstProducts));
             Context.Response.Flush();
@@ -122,12 +122,12 @@ namespace ExcombiiAPI
         #region Get all products
         [WebMethod]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        public void GetProductDetails(string sProductCode)
+        public void GetProductDetails(string sProductCode, string sUserCode)
         {
             System.Web.Script.Serialization.JavaScriptSerializer oSerializer = new System.Web.Script.Serialization.JavaScriptSerializer();
             BLProduct objProduct = new BLProduct();
             objProduct.sProductCode = sProductCode;
-            objProduct = objProduct.GetProductDetails();
+            objProduct = objProduct.GetProductDetails(sUserCode);
 
             Context.Response.Write(oSerializer.Serialize(objProduct));
             Context.Response.Flush();

@@ -172,6 +172,16 @@ namespace ExcombiiAPI.BusinessLayer
         }
         #endregion
 
+        #region boolean properties
+        private bool _IsLiked = false;
+
+        public bool IsLiked
+        {
+            get { return _IsLiked; }
+            set { _IsLiked = value; }
+        }
+        #endregion
+
         #region other Properties
         private List<BLUser> _objLstLikedUsers;
 
@@ -207,8 +217,8 @@ namespace ExcombiiAPI.BusinessLayer
             {
                 InitializeDb();
                 List<DbParams> objLstDbParams = new List<DbParams>();
-                objLstDbParams.Add(new DbParams(DbType.Guid, 100, sUserCode, "@UserCode", ParameterDirection.Input));
-                objLstDbParams.Add(new DbParams(DbType.Guid, 100, sProductCode, "@ProductCode", ParameterDirection.Input));
+                objLstDbParams.Add(new DbParams(DbType.String, 100, sUserCode, "@UserCode", ParameterDirection.Input));
+                objLstDbParams.Add(new DbParams(DbType.String, 100, sProductCode, "@ProductCode", ParameterDirection.Input));
                 objLstDbParams.Add(new DbParams(DbType.Boolean, 100, IsLiked, "@IsLiked", ParameterDirection.Input));
                 dbReader = ObjDbfactory.GetReader("SP_UpdateProductLikes", false, objLstDbParams);
 
@@ -234,7 +244,7 @@ namespace ExcombiiAPI.BusinessLayer
             return this;
         }
 
-        public List<BLProduct> GetAllProducts()
+        public List<BLProduct> GetAllProducts(string sUserCode)
         {
             List<BLProduct> objLstProducts = new List<BLProduct>();
             DbDataReader dbReader = null;
@@ -242,6 +252,7 @@ namespace ExcombiiAPI.BusinessLayer
             {
                 InitializeDb();
                 List<DbParams> objLstDbParams = new List<DbParams>();
+                objLstDbParams.Add(new DbParams(DbType.String, 100, sUserCode, "@UserCode", ParameterDirection.Input));
                 dbReader = ObjDbfactory.GetReader("SP_GetAllProducts", false, objLstDbParams);
 
                 while (dbReader.Read())
@@ -268,7 +279,7 @@ namespace ExcombiiAPI.BusinessLayer
                     objProduct.SBusinessid = ToString(dbReader["id"]);
                     objProduct.SFullName = ToString(dbReader["FullName"]);
                     objProduct.iProductLikeCount = ToInteger(dbReader["LikeCount"]);
-
+                    objProduct.IsLiked = ToBool(dbReader["IsLiked"]);
                     objLstProducts.Add(objProduct);
                 }
 
@@ -285,7 +296,7 @@ namespace ExcombiiAPI.BusinessLayer
             return objLstProducts;
         }
 
-        public BLProduct GetProductDetails()
+        public BLProduct GetProductDetails(string sUserCode)
         {
             BLProduct objProduct = new BLProduct();
             DbDataReader dbReader = null;
@@ -293,7 +304,8 @@ namespace ExcombiiAPI.BusinessLayer
             {
                 InitializeDb();
                 List<DbParams> objLstDbParams = new List<DbParams>();
-                objLstDbParams.Add(new DbParams(DbType.Guid, 100, sProductCode, "@ProductCode", ParameterDirection.Input));
+                objLstDbParams.Add(new DbParams(DbType.String, 100, sProductCode, "@ProductCode", ParameterDirection.Input));
+                objLstDbParams.Add(new DbParams(DbType.String, 100, sUserCode, "@UserCode", ParameterDirection.Input));
                 dbReader = ObjDbfactory.GetReader("SP_GetProductDetail", false, objLstDbParams);
 
                 while (dbReader.Read())
@@ -319,6 +331,7 @@ namespace ExcombiiAPI.BusinessLayer
                     this.SBusinessid = ToString(dbReader["id"]);
                     this.SFullName = ToString(dbReader["FullName"]);
                     this.iProductLikeCount = ToInteger(dbReader["LikeCount"]);
+                    this.IsLiked = ToBool(dbReader["IsLiked"]);
                 }
 
                 /* Getting Users information */
